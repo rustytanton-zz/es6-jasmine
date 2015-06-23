@@ -3,9 +3,16 @@
 	<head>
 		<script src="../node_modules/systemjs/dist/system.js"></script>
 		<script src="../config.js"></script>
+		<script>
+			System.config({
+				map: {
+					babel: '/node_modules/babel-core/browser.min.js'
+				}
+			});
+			System.import('../lib/main');
+		</script>
 	</head>
 	<body>
 		<div id="main"></div>
-		<script>System.import('../lib/main');</script>
 	</body>
 </html>
