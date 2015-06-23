@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<!-- Jasmine -->
+		<link rel="stylesheet" type="text/css" href="bower_components/jasmine-core/lib/jasmine-core/jasmine.css" />
+		<script src="bower_components/jasmine-core/lib/jasmine-core/jasmine.js"></script>
+		<script src="bower_components/jasmine-core/lib/jasmine-core/jasmine-html.js"></script>
+		<script src="bower_components/jasmine-core/lib/jasmine-core/boot.js"></script>
+
+		<!-- Example app -->
+		<script src="node_modules/systemjs/dist/system.js"></script>
+		<script src="config.js"></script>
+		<script>System.import('spec/plugin');</script>
+		<script>System.import('spec/plugin2');</script>
+		<script>System.import('spec/zzz-jasmine-reload');</script>
+	</head>
+	<body>
+	</body>
+</html>
