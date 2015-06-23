@@ -3,13 +3,12 @@ import { MainPlugin } from 'plugin';
 
 describe('plugin', () => {
 
-	afterEach(() => {
-		$('#testContainer').remove();
+	beforeEach(() => {
+		$('body').append('<div id="testContainer"></div>');
 	});
 
-	beforeEach(() => {
+	afterEach(() => {
 		$('#testContainer').remove();
-		$('body').append('<div id="testContainer"></div>');
 	});
 
 	it('should replace a test element with expected text', (done) => {
