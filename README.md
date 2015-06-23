@@ -12,7 +12,7 @@ Set-up:
 *	Install project dependencies: `npm install && bower install`
 
 View app demo:
-*	Run `node server.js`
+*	Run `node demo/server.js` from project root
 *	Visit `http://localhost:3000/demo/dynamic.html` or `http://localhost:3000/demo/compiled.html` in a browser
 
 Compile:
