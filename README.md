@@ -16,7 +16,7 @@ View app demo:
 *	Visit `http://localhost:3000/demo/dynamic.html` or `http://localhost:3000/demo/compiled.html` in a browser
 
 Compile:
-*	Run `node build.js`
+*	Run `grunt es6`
 
 Execute tests:
 *	Run `karma start`

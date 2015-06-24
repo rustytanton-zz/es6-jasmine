@@ -2,6 +2,8 @@ module.exports = function(grunt) {
 
     'use strict';
 
+    grunt.registerTask('es6', ['systemjs','es6templates']);
+
     require('./util/bsp-grunt')(grunt, {
         systemjs: {
             dist: {
