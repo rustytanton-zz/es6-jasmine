@@ -296,12 +296,17 @@ module.exports = function(grunt, config) {
     };
     var done = this.async();
     var options = this.options();
+    var filesCount = 0;
+    var filesDone = 0;
     if (!options.configFile) {
       grunt.fail.fatal('SystemJS: must specify configFile option');
     }
     if (options.configOverrides) {
       config = _.extend({}, config, options.configOverrides);
     }
+    this.files.forEach(function() {
+      filesCount++;
+    });
     this.files.forEach(function(file) {
       builder.loadConfig(options.configFile)
         .then(function() {
@@ -311,7 +316,10 @@ module.exports = function(grunt, config) {
         .then(function(data) {
           grunt.file.write(file.dest, data.source);
           grunt.log.writeln('SystemJS: ' + file.dest + ' created');
-          done();
+          filesDone++;
+          if (filesDone === filesCount) {
+            done();
+          }
         })
         .catch(function(err) {
           grunt.log.writeln('SystemJS: failed to create ' + file.dest);
