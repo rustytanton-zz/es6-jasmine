@@ -25,10 +25,10 @@ builder.loadConfig('./config.js')
 
 /** compile example template for server usage */
 
-System.import('./templates/plugin.js')
+System.import('./templates/utility.js')
 	.then(function(template) {
-		fs.writeFile('./templates.server/plugin.html', template.default);
-		console.log('compiled templates/plugin.js to templates.server/plugin.html');
+		fs.writeFile('./templates.server/utility.html', template.default);
+		console.log('compiled templates/utility.js to templates.server/utility.html');
 	})
 	.catch(function(err) {
 		console.log('template build error');

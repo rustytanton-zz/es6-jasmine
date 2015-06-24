@@ -1,406 +1,3 @@
-(function (global) {
-  var babelHelpers = global.babelHelpers = {};
-
-  babelHelpers.inherits = function (subClass, superClass) {
-    if (typeof superClass !== "function" && superClass !== null) {
-      throw new TypeError("Super expression must either be null or a function, not " + typeof superClass);
-    }
-
-    subClass.prototype = Object.create(superClass && superClass.prototype, {
-      constructor: {
-        value: subClass,
-        enumerable: false,
-        writable: true,
-        configurable: true
-      }
-    });
-    if (superClass) subClass.__proto__ = superClass;
-  };
-
-  babelHelpers.defaults = function (obj, defaults) {
-    var keys = Object.getOwnPropertyNames(defaults);
-
-    for (var i = 0; i < keys.length; i++) {
-      var key = keys[i];
-      var value = Object.getOwnPropertyDescriptor(defaults, key);
-
-      if (value && value.configurable && obj[key] === undefined) {
-        Object.defineProperty(obj, key, value);
-      }
-    }
-
-    return obj;
-  };
-
-  babelHelpers.createClass = (function () {
-    function defineProperties(target, props) {
-      for (var i = 0; i < props.length; i++) {
-        var descriptor = props[i];
-        descriptor.enumerable = descriptor.enumerable || false;
-        descriptor.configurable = true;
-        if ("value" in descriptor) descriptor.writable = true;
-        Object.defineProperty(target, descriptor.key, descriptor);
-      }
-    }
-
-    return function (Constructor, protoProps, staticProps) {
-      if (protoProps) defineProperties(Constructor.prototype, protoProps);
-      if (staticProps) defineProperties(Constructor, staticProps);
-      return Constructor;
-    };
-  })();
-
-  babelHelpers.createDecoratedClass = (function () {
-    function defineProperties(target, descriptors, initializers) {
-      for (var i = 0; i < descriptors.length; i++) {
-        var descriptor = descriptors[i];
-        var decorators = descriptor.decorators;
-        var key = descriptor.key;
-        delete descriptor.key;
-        delete descriptor.decorators;
-        descriptor.enumerable = descriptor.enumerable || false;
-        descriptor.configurable = true;
-        if ("value" in descriptor || descriptor.initializer) descriptor.writable = true;
-
-        if (decorators) {
-          for (var f = 0; f < decorators.length; f++) {
-            var decorator = decorators[f];
-
-            if (typeof decorator === "function") {
-              descriptor = decorator(target, key, descriptor) || descriptor;
-            } else {
-              throw new TypeError("The decorator for method " + descriptor.key + " is of the invalid type " + typeof decorator);
-            }
-          }
-
-          if (descriptor.initializer !== undefined) {
-            initializers[key] = descriptor;
-            continue;
-          }
-        }
-
-        Object.defineProperty(target, key, descriptor);
-      }
-    }
-
-    return function (Constructor, protoProps, staticProps, protoInitializers, staticInitializers) {
-      if (protoProps) defineProperties(Constructor.prototype, protoProps, protoInitializers);
-      if (staticProps) defineProperties(Constructor, staticProps, staticInitializers);
-      return Constructor;
-    };
-  })();
-
-  babelHelpers.createDecoratedObject = function (descriptors) {
-    var target = {};
-
-    for (var i = 0; i < descriptors.length; i++) {
-      var descriptor = descriptors[i];
-      var decorators = descriptor.decorators;
-      var key = descriptor.key;
-      delete descriptor.key;
-      delete descriptor.decorators;
-      descriptor.enumerable = true;
-      descriptor.configurable = true;
-      descriptor.writable = true;
-
-      if (decorators) {
-        for (var f = 0; f < decorators.length; f++) {
-          var decorator = decorators[f];
-
-          if (typeof decorator === "function") {
-            descriptor = decorator(target, key, descriptor) || descriptor;
-          } else {
-            throw new TypeError("The decorator for method " + descriptor.key + " is of the invalid type " + typeof decorator);
-          }
-        }
-      }
-
-      if (descriptor.initializer) {
-        descriptor.value = descriptor.initializer.call(target);
-      }
-
-      Object.defineProperty(target, key, descriptor);
-    }
-
-    return target;
-  };
-
-  babelHelpers.defineDecoratedPropertyDescriptor = function (target, key, descriptors) {
-    var _descriptor = descriptors[key];
-    if (!_descriptor) return;
-    var descriptor = {};
-
-    for (var _key in _descriptor) descriptor[_key] = _descriptor[_key];
-
-    descriptor.value = descriptor.initializer.call(target);
-    Object.defineProperty(target, key, descriptor);
-  };
-
-  babelHelpers.taggedTemplateLiteral = function (strings, raw) {
-    return Object.freeze(Object.defineProperties(strings, {
-      raw: {
-        value: Object.freeze(raw)
-      }
-    }));
-  };
-
-  babelHelpers.taggedTemplateLiteralLoose = function (strings, raw) {
-    strings.raw = raw;
-    return strings;
-  };
-
-  babelHelpers.toArray = function (arr) {
-    return Array.isArray(arr) ? arr : Array.from(arr);
-  };
-
-  babelHelpers.toConsumableArray = function (arr) {
-    if (Array.isArray(arr)) {
-      for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) arr2[i] = arr[i];
-
-      return arr2;
-    } else {
-      return Array.from(arr);
-    }
-  };
-
-  babelHelpers.slicedToArray = function (arr, i) {
-    if (Array.isArray(arr)) {
-      return arr;
-    } else if (Symbol.iterator in Object(arr)) {
-      var _arr = [];
-      var _n = true;
-      var _d = false;
-      var _e = undefined;
-
-      try {
-        for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) {
-          _arr.push(_s.value);
-
-          if (i && _arr.length === i) break;
-        }
-      } catch (err) {
-        _d = true;
-        _e = err;
-      } finally {
-        try {
-          if (!_n && _i["return"]) _i["return"]();
-        } finally {
-          if (_d) throw _e;
-        }
-      }
-
-      return _arr;
-    } else {
-      throw new TypeError("Invalid attempt to destructure non-iterable instance");
-    }
-  };
-
-  babelHelpers.slicedToArrayLoose = function (arr, i) {
-    if (Array.isArray(arr)) {
-      return arr;
-    } else if (Symbol.iterator in Object(arr)) {
-      var _arr = [];
-
-      for (var _iterator = arr[Symbol.iterator](), _step; !(_step = _iterator.next()).done;) {
-        _arr.push(_step.value);
-
-        if (i && _arr.length === i) break;
-      }
-
-      return _arr;
-    } else {
-      throw new TypeError("Invalid attempt to destructure non-iterable instance");
-    }
-  };
-
-  babelHelpers.objectWithoutProperties = function (obj, keys) {
-    var target = {};
-
-    for (var i in obj) {
-      if (keys.indexOf(i) >= 0) continue;
-      if (!Object.prototype.hasOwnProperty.call(obj, i)) continue;
-      target[i] = obj[i];
-    }
-
-    return target;
-  };
-
-  babelHelpers.hasOwn = Object.prototype.hasOwnProperty;
-  babelHelpers.slice = Array.prototype.slice;
-  babelHelpers.bind = Function.prototype.bind;
-
-  babelHelpers.defineProperty = function (obj, key, value) {
-    return Object.defineProperty(obj, key, {
-      value: value,
-      enumerable: true,
-      configurable: true,
-      writable: true
-    });
-  };
-
-  babelHelpers.asyncToGenerator = function (fn) {
-    return function () {
-      var gen = fn.apply(this, arguments);
-      return new Promise(function (resolve, reject) {
-        var callNext = step.bind(null, "next");
-        var callThrow = step.bind(null, "throw");
-
-        function step(key, arg) {
-          try {
-            var info = gen[key](arg);
-            var value = info.value;
-          } catch (error) {
-            reject(error);
-            return;
-          }
-
-          if (info.done) {
-            resolve(value);
-          } else {
-            Promise.resolve(value).then(callNext, callThrow);
-          }
-        }
-
-        callNext();
-      });
-    };
-  };
-
-  babelHelpers.interopRequireWildcard = function (obj) {
-    if (obj && obj.__esModule) {
-      return obj;
-    } else {
-      var newObj = {};
-
-      if (obj != null) {
-        for (var key in obj) {
-          if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key];
-        }
-      }
-
-      newObj["default"] = obj;
-      return newObj;
-    }
-  };
-
-  babelHelpers.interopRequireDefault = function (obj) {
-    return obj && obj.__esModule ? obj : {
-      "default": obj
-    };
-  };
-
-  babelHelpers._typeof = function (obj) {
-    return obj && obj.constructor === Symbol ? "symbol" : typeof obj;
-  };
-
-  babelHelpers._extends = Object.assign || function (target) {
-    for (var i = 1; i < arguments.length; i++) {
-      var source = arguments[i];
-
-      for (var key in source) {
-        if (Object.prototype.hasOwnProperty.call(source, key)) {
-          target[key] = source[key];
-        }
-      }
-    }
-
-    return target;
-  };
-
-  babelHelpers.get = function get(object, property, receiver) {
-    if (object === null) object = Function.prototype;
-    var desc = Object.getOwnPropertyDescriptor(object, property);
-
-    if (desc === undefined) {
-      var parent = Object.getPrototypeOf(object);
-
-      if (parent === null) {
-        return undefined;
-      } else {
-        return get(parent, property, receiver);
-      }
-    } else if ("value" in desc) {
-      return desc.value;
-    } else {
-      var getter = desc.get;
-
-      if (getter === undefined) {
-        return undefined;
-      }
-
-      return getter.call(receiver);
-    }
-  };
-
-  babelHelpers.set = function set(object, property, value, receiver) {
-    var desc = Object.getOwnPropertyDescriptor(object, property);
-
-    if (desc === undefined) {
-      var parent = Object.getPrototypeOf(object);
-
-      if (parent !== null) {
-        set(parent, property, value, receiver);
-      }
-    } else if ("value" in desc && desc.writable) {
-      desc.value = value;
-    } else {
-      var setter = desc.set;
-
-      if (setter !== undefined) {
-        setter.call(receiver, value);
-      }
-    }
-
-    return value;
-  };
-
-  babelHelpers.classCallCheck = function (instance, Constructor) {
-    if (!(instance instanceof Constructor)) {
-      throw new TypeError("Cannot call a class as a function");
-    }
-  };
-
-  babelHelpers.objectDestructuringEmpty = function (obj) {
-    if (obj == null) throw new TypeError("Cannot destructure undefined");
-  };
-
-  babelHelpers.temporalUndefined = {};
-
-  babelHelpers.temporalAssertDefined = function (val, name, undef) {
-    if (val === undef) {
-      throw new ReferenceError(name + " is not defined - temporal dead zone");
-    }
-
-    return true;
-  };
-
-  babelHelpers.selfGlobal = typeof global === "undefined" ? self : global;
-
-  babelHelpers.defaultProps = function (defaultProps, props) {
-    if (defaultProps) {
-      for (var propName in defaultProps) {
-        if (typeof props[propName] === "undefined") {
-          props[propName] = defaultProps[propName];
-        }
-      }
-    }
-
-    return props;
-  };
-
-  babelHelpers._instanceof = function (left, right) {
-    if (right != null && right[Symbol.hasInstance]) {
-      return right[Symbol.hasInstance](left);
-    } else {
-      return left instanceof right;
-    }
-  };
-
-  babelHelpers.interopRequire = function (obj) {
-    return obj && obj.__esModule ? obj["default"] : obj;
-  };
-})(typeof global === "undefined" ? self : global);
-
 (function(global) {
 
   var defined = {};
@@ -6932,7 +6529,312 @@ var _removeDefine = System.get("@@amd-helpers").createDefine();
 
 _removeDefine();
 })();
-System.register("templates/plugin.js", [], function (_export) {
+System.register('util/bsp-utils.js', ['bower_components/jquery/dist/jquery.js'], function (_export) {
+    /** this will be pulled in from bower later */
+
+    'use strict';
+
+    var $, bsp_utils;
+    return {
+        setters: [function (_bower_componentsJqueryDistJqueryJs) {
+            $ = _bower_componentsJqueryDistJqueryJs['default'];
+        }],
+        execute: function () {
+            bsp_utils = {};
+
+            // Throttles execution of a function.
+            (function () {
+                bsp_utils.throttle = function (interval, throttledFunction) {
+                    if (interval <= 0) {
+                        return throttledFunction;
+                    }
+
+                    var lastTrigger = 0;
+                    var timeout;
+                    var lastArguments;
+
+                    return function () {
+                        lastArguments = arguments;
+
+                        // Already scheduled to run.
+                        if (timeout) {
+                            return;
+                        }
+
+                        var context = this;
+                        var now = +$.now();
+                        var delay = interval - now + lastTrigger;
+
+                        // Waited long enough so execute.
+                        if (delay <= 0) {
+                            lastTrigger = now;
+                            throttledFunction.apply(context, lastArguments);
+
+                            // Schedule for later.
+                        } else {
+                            timeout = setTimeout(function () {
+                                lastTrigger = now;
+                                timeout = null;
+                                throttledFunction.apply(context, lastArguments);
+                            }, delay);
+                        }
+                    };
+                };
+            })();
+
+            // Detects inserts into the DOM.
+            (function () {
+                var domInserts = [];
+                var insertedClassNamePrefix = 'bsp-onDomInsert-inserted-';
+                var insertedClassNameIndex = 0;
+
+                // Execute all callbacks on any new elements.
+                function doDomInsert(domInsert) {
+                    var insertedClassName = domInsert.insertedClassName;
+                    var $items = domInsert.$roots.find(domInsert.selector).filter(':not(.' + insertedClassName + ')');
+
+                    if ($items.length > 0) {
+                        $items.addClass(insertedClassName);
+
+                        var callbacks = domInsert.callbacks;
+                        var beforeInsert = callbacks.beforeInsert;
+                        var insert = callbacks.insert;
+                        var afterInsert = callbacks.afterInsert;
+
+                        if (beforeInsert) {
+                            beforeInsert($.makeArray($items));
+                        }
+
+                        if (insert) {
+                            $items.each(function () {
+                                insert(this);
+                            });
+                        }
+
+                        if (afterInsert) {
+                            afterInsert($.makeArray($items));
+                        }
+                    }
+                }
+
+                bsp_utils.onDomInsert = function (roots, selector, callbacks) {
+                    var insertedClassName = insertedClassNamePrefix + insertedClassNameIndex;
+
+                    ++insertedClassNameIndex;
+
+                    var domInsert = {
+                        '$roots': $(roots),
+                        'insertedClassName': insertedClassName,
+                        'selector': selector,
+                        'callbacks': callbacks
+                    };
+
+                    // Execute callbacks on already existing elements first.
+                    $(document).ready(function () {
+                        doDomInsert(domInsert);
+                    });
+
+                    domInserts.push(domInsert);
+                };
+
+                // Try to detect DOM mutations efficiently.
+                var mutationObserver = window.MutationObserver || window.WebKitMutationObserver;
+
+                function redoAllDomInserts() {
+                    $.each(domInserts, function (i, domInsert) {
+                        doDomInsert(domInsert);
+                    });
+                }
+
+                if (mutationObserver) {
+                    new mutationObserver(bsp_utils.throttle(1, redoAllDomInserts)).observe(document, {
+                        'childList': true,
+                        'subtree': true
+                    });
+
+                    // But if not available, brute-force it.
+                } else {
+                    setInterval(redoAllDomInserts, 1000 / 60);
+                }
+            })();
+
+            // Defines a plugin.
+            (function () {
+                var NOT_WHITE_RE = /\S+/g;
+                var OPTIONS_DATA_KEY = '_options';
+
+                var $d = $(document);
+
+                bsp_utils.plugin = function (globals, namespace, name, actions) {
+                    var plugin = actions || {};
+
+                    plugin._name = namespace + '_' + name;
+
+                    plugin._classNamePrefix = namespace + '-' + name + '-';
+                    plugin._rootClassName = plugin._classNamePrefix + 'root';
+                    plugin._itemClassName = plugin._classNamePrefix + 'item';
+
+                    // Event handling.
+                    function renameEvents(events) {
+                        return $.map(events.match(NOT_WHITE_RE), function (s) {
+                            return s + '.' + plugin._name;
+                        }).join(' ');
+                    }
+
+                    plugin._on = function (elements, events, selectorOrHandler, dataOrHandler, handler) {
+                        var $elements = $(elements);
+                        events = renameEvents(events);
+
+                        if (handler) {
+                            $elements.on(events, selectorOrHandler, dataOrHandler, handler);
+                        } else if (dataOrHandler) {
+                            $elements.on(events, selectorOrHandler, dataOrHandler);
+                        } else {
+                            $elements.on(events, selectorOrHandler);
+                        }
+                    };
+
+                    plugin._off = function (elements, events, selector) {
+                        var $elements = $(elements);
+
+                        if (selector) {
+                            $elements.off(renameEvents(events), selector);
+                        } else if (events) {
+                            $elements.off(renameEvents(events));
+                        } else {
+                            $elements.off('.' + plugin._name);
+                        }
+                    };
+
+                    // Private data.
+                    plugin._dataKeyPrefix = namespace + '-' + name + '-';
+
+                    plugin._data = function (elements, key, value) {
+                        var $elements = $(elements);
+
+                        if ($elements.length === 0) {
+                            return null;
+                        } else {
+                            key = plugin._dataKeyPrefix + key;
+
+                            if (value === undefined) {
+                                return $.data($elements[0], key);
+                            } else {
+                                return $elements.each(function () {
+                                    $.data(this, key, value);
+                                });
+                            }
+                        }
+                    };
+
+                    // Options.
+                    plugin.option = function (elements, key, value) {
+                        var plugin = this;
+
+                        if (typeof key === 'undefined') {
+                            return plugin._data(elements, OPTIONS_DATA_KEY) || {};
+                        } else if (typeof value === 'undefined') {
+                            return (plugin._data(elements, OPTIONS_DATA_KEY) || {})[key];
+                        } else {
+                            $(elements).each(function () {
+                                var options = plugin._data(this, OPTIONS_DATA_KEY);
+
+                                if (!options) {
+                                    options = {};
+                                    plugin._data(this, OPTIONS_DATA_KEY, options);
+                                }
+
+                                options[key] = value;
+                            });
+
+                            return null;
+                        }
+                    };
+
+                    plugin._attrName = 'data-' + namespace + '-' + name;
+                    plugin._attrNamePrefix = plugin._attrName + '-';
+                    plugin._optionsAttrName = plugin._attrNamePrefix + 'options';
+
+                    function updateOptions($element, parentOptions) {
+                        var elementOptions = $element.attr(plugin._optionsAttrName);
+
+                        plugin._data($element[0], OPTIONS_DATA_KEY, elementOptions ? $.extend(true, {}, parentOptions, $.parseJSON(elementOptions)) : parentOptions);
+                    }
+
+                    // Initialization.
+                    plugin.live = function (roots, selector, options) {
+                        var $roots = $(roots);
+
+                        if ($roots.length === 0) {
+                            return;
+                        }
+
+                        // Update root options.
+                        $roots.each(function () {
+                            var $rootElement = this.nodeType === 9 ? $(this.documentElement) : $(this);
+
+                            $rootElement.addClass(plugin._rootClassName);
+                            updateOptions($rootElement, $.extend(true, {}, plugin._defaultOptions, options));
+                        });
+
+                        var init = plugin._init;
+                        var each = plugin._each;
+                        var all = plugin._all;
+
+                        if (init) {
+                            init.call(plugin, $.makeArray($roots), selector);
+                        }
+
+                        if (each || all) {
+                            if (selector) {
+                                bsp_utils.onDomInsert($.makeArray($roots), selector, {
+                                    'insert': function insert(item) {
+                                        var $item = $(item);
+                                        var rootOptions = plugin.option($item.closest('.' + plugin._rootClassName));
+
+                                        $item.addClass(plugin._itemClassName);
+                                        updateOptions($item, rootOptions);
+
+                                        if (each) {
+                                            each.call(plugin, item);
+                                        }
+                                    },
+
+                                    'afterInsert': !all ? $.noop : function (items) {
+                                        all.call(plugin, items);
+                                    }
+                                });
+                            }
+                        }
+                    };
+
+                    plugin.init = function (elements, options) {
+                        plugin.live(elements, null, options);
+                    };
+
+                    // One-time installation callback.
+                    if (plugin._install) {
+                        plugin._install();
+                    }
+
+                    // Automatically initialize.
+                    $d.ready(function () {
+                        plugin.live(document, '[' + plugin._attrName + ']');
+                    });
+
+                    if (globals) {
+                        globals[plugin._name] = plugin;
+                    }
+
+                    return plugin;
+                };
+            })();
+
+            _export('bsp_utils', bsp_utils);
+        }
+    };
+});
+System.register("templates/utility.js", [], function (_export) {
   "use strict";
 
   return {
@@ -6942,43 +6844,56 @@ System.register("templates/plugin.js", [], function (_export) {
     }
   };
 });
-System.register('lib/plugin.js', ['bower_components/jquery/dist/jquery.js', 'templates/plugin.js'], function (_export) {
+System.register('lib/utility.js', ['templates/utility.js'], function (_export) {
 	'use strict';
 
-	var $, template, MainPlugin;
+	var template;
 	return {
-		setters: [function (_bower_componentsJqueryDistJqueryJs) {
-			$ = _bower_componentsJqueryDistJqueryJs.$;
-		}, function (_templatesPluginJs) {
-			template = _templatesPluginJs['default'];
+		setters: [function (_templatesUtilityJs) {
+			template = _templatesUtilityJs['default'];
 		}],
 		execute: function () {
-			MainPlugin = function MainPlugin($el) {
-				babelHelpers.classCallCheck(this, MainPlugin);
-
-				$el.html(template);
-			};
-
-			_export('MainPlugin', MainPlugin);
-		}
-	};
-});
-System.register('lib/main.js', ['bower_components/jquery/dist/jquery.js', 'lib/plugin.js'], function (_export) {
-	'use strict';
-
-	var $, MainPlugin;
-	return {
-		setters: [function (_bower_componentsJqueryDistJqueryJs) {
-			$ = _bower_componentsJqueryDistJqueryJs['default'];
-		}, function (_libPluginJs) {
-			MainPlugin = _libPluginJs.MainPlugin;
-		}],
-		execute: function () {
-			$(function () {
-				new MainPlugin($('#main'));
+			_export('default', {
+				init: function init($el, options) {
+					$el.html(template);
+				}
 			});
 		}
 	};
+});
+System.register('lib/plugin.js', ['bower_components/jquery/dist/jquery.js', 'util/bsp-utils.js', 'lib/utility.js'], function (_export) {
+    'use strict';
+
+    var $, bsp_utils, utility;
+    return {
+        setters: [function (_bower_componentsJqueryDistJqueryJs) {
+            $ = _bower_componentsJqueryDistJqueryJs['default'];
+        }, function (_utilBspUtilsJs) {
+            bsp_utils = _utilBspUtilsJs.bsp_utils;
+        }, function (_libUtilityJs) {
+            utility = _libUtilityJs['default'];
+        }],
+        execute: function () {
+            _export('default', bsp_utils.plugin(false, 'bsp', 'example-plugin', {
+                '_each': function _each(item) {
+                    var options = this.option(item);
+                    var moduleInstance = Object.create(utility);
+                    moduleInstance.init($(item), options);
+                }
+            }));
+        }
+    };
+});
+System.register('lib/main.js', ['lib/plugin.js'], function (_export) {
+  'use strict';
+
+  var plugin;
+  return {
+    setters: [function (_libPluginJs) {
+      plugin = _libPluginJs['default'];
+    }],
+    execute: function () {}
+  };
 });
 })
 (function(factory) {

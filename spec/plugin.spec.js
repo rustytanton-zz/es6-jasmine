@@ -1,10 +1,10 @@
 import $ from 'jquery';
-import { MainPlugin } from '../lib/plugin';
+import plugin from '../lib/plugin';
 
 describe('plugin', () => {
 
 	beforeEach(() => {
-		$('body').append('<div id="testContainer"></div>');
+		$('body').append('<div id="testContainer" data-bsp-example-plugin></div>');
 	});
 
 	afterEach(() => {
@@ -12,7 +12,6 @@ describe('plugin', () => {
 	});
 
 	it('should replace a test element with expected text', (done) => {
-		new MainPlugin( $('#testContainer') );
 		setTimeout(() => {
 			expect( $('#testContainer').html() ).toBe('<p>hello from ES6</p>');
 			done();

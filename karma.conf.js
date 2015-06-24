@@ -21,6 +21,7 @@ module.exports = function(config) {
 				'!lib/main.js',
 				'lib/*.js',
 				'spec/*.js',
+				'util/*.js',
 				'templates/*.js'
 			]
 		}
