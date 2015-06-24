@@ -1,3 +1,4 @@
+/** this will be pulled in with bower */
 module.exports = function(grunt, config) {
   var BOWER = require('bower');
   var EXTEND = require('extend');
@@ -5,6 +6,7 @@ module.exports = function(grunt, config) {
   var PATH = require('path');
   var Builder = require('systemjs-builder');
   var builder = new Builder();
+  var System = require('es6-module-loader').System;
 
   grunt.initConfig(EXTEND(true, { }, {
     bsp: {
@@ -313,6 +315,30 @@ module.exports = function(grunt, config) {
         })
         .catch(function(err) {
           grunt.log.writeln('SystemJS: failed to create ' + file.dest);
+          grunt.fail.fatal(err);
+        });
+    });
+  });
+
+  grunt.registerMultiTask('es6templates', 'Compiles ECMAScript 6 string literal template modules to HTML files', function() {
+    var done = this.async();
+    var filesCount = 0;
+    var filesDone = 0;
+    this.files.forEach(function() {
+      filesCount++;
+    });
+    this.files.forEach(function(file) {
+      System.import(file.src[0])
+        .then(function(template) {
+          grunt.file.write(file.dest, template.default);
+          grunt.log.writeln('ES6 Templates: compiled ' + file.src[0] + ' to ' + file.dest);
+          filesDone++;
+          if (filesDone === filesCount) {
+            done();
+          }
+        })
+        .catch(function(err) {
+          grunt.log.writeln('ES6 Templates: failed to write ' + file.src[0] + ' to ' + file.dest);
           grunt.fail.fatal(err);
         });
     });
