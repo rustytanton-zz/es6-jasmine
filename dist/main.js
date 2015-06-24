@@ -6932,19 +6932,31 @@ var _removeDefine = System.get("@@amd-helpers").createDefine();
 
 _removeDefine();
 })();
-System.register('lib/plugin.js', ['bower_components/jquery/dist/jquery.js'], function (_export) {
+System.register("templates/plugin.js", [], function (_export) {
+  "use strict";
+
+  return {
+    setters: [],
+    execute: function () {
+      _export("default", "<p>hello from ES6</p>");
+    }
+  };
+});
+System.register('lib/plugin.js', ['bower_components/jquery/dist/jquery.js', 'templates/plugin.js'], function (_export) {
 	'use strict';
 
-	var $, MainPlugin;
+	var $, template, MainPlugin;
 	return {
 		setters: [function (_bower_componentsJqueryDistJqueryJs) {
 			$ = _bower_componentsJqueryDistJqueryJs.$;
+		}, function (_templatesPluginJs) {
+			template = _templatesPluginJs['default'];
 		}],
 		execute: function () {
 			MainPlugin = function MainPlugin($el) {
 				babelHelpers.classCallCheck(this, MainPlugin);
 
-				$el.html('hello from ES6');
+				$el.html(template);
 			};
 
 			_export('MainPlugin', MainPlugin);

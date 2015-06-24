@@ -14,7 +14,7 @@ describe('plugin', () => {
 	it('should replace a test element with expected text', (done) => {
 		new MainPlugin( $('#testContainer') );
 		setTimeout(() => {
-			expect( $('#testContainer').html() ).toBe('hello from ES6');
+			expect( $('#testContainer').html() ).toBe('<p>hello from ES6</p>');
 			done();
 		}, 50);
 	});

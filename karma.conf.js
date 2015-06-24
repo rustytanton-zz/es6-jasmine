@@ -19,8 +19,9 @@ module.exports = function(config) {
 			files: [
 				'./bower_components/jquery/dist/jquery.js',
 				'!lib/main.js',
-				'lib/**.js',
-				'spec/**.js'
+				'lib/*.js',
+				'spec/*.js',
+				'templates/*.js'
 			]
 		}
 	});
