@@ -309,6 +309,7 @@ module.exports = function(grunt, config) {
         .then(function(data) {
           grunt.file.write(file.dest, data.source);
           grunt.log.writeln('SystemJS: ' + file.dest + ' created');
+          done();
         })
         .catch(function(err) {
           grunt.log.writeln('SystemJS: failed to create ' + file.dest);
