@@ -1,7 +1,7 @@
 module.exports = function(config) {
 	config.set({
 		autoWatch: true,
-		baseURL: '/',
+		baseURL: '',
 		browsers: ['PhantomJS'],
 		captureConsole: true,
 		files: [],
@@ -12,17 +12,19 @@ module.exports = function(config) {
 			require('karma-systemjs')
 		],
 		systemjs: {
-			configFile: './config.js',
+			configFile: './src/js/config.js',
 			config: {
+				/** @todo ideally wouldn't have to manually map jquery */
+				map: {
+					'jquery': 'bower_components/jquery/dist/jquery.js'
+				},
 				transpiler: 'babel'
 			},
 			files: [
-				'./bower_components/jquery/dist/jquery.js',
-				'!lib/main.js',
-				'lib/*.js',
-				'spec/*.js',
-				'util/*.js',
-				'templates/*.js'
+				'bower_components/jquery/dist/jquery.js',
+				'src/js/!(main).js',
+				'src/js/**/*.js',
+				'spec/*.js'
 			]
 		}
 	});

@@ -4,17 +4,17 @@ module.exports = function(grunt) {
 
     grunt.registerTask('es6', ['systemjs','es6templates']);
 
-    require('./util/bsp-grunt')(grunt, {
+    require('./src/js/temp/bsp-grunt')(grunt, {
         systemjs: {
             dist: {
                 options: {
-                    configFile: 'config.js',
+                    configFile: 'src/js/config.js',
                     configOverrides: {
                         baseURL: '.'
                     }
                 },
                 files: [
-                    { 'dist/main.js': 'lib/main.js' }
+                    { 'dist/main.js': 'src/js/main.js' }
                 ]
             }
         },
@@ -22,7 +22,7 @@ module.exports = function(grunt) {
             dist: {
                 files: [
                     {
-                        cwd: 'templates',
+                        cwd: 'src/js/templates',
                         expand: true,
                         ext: '.html',
                         dest: 'dist/templates/',

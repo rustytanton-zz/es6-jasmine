@@ -376,7 +376,7 @@
   // etc UMD / module pattern
 })*/
 
-(['lib/main.js'], function(System) {
+(['src/js/main.js'], function(System) {
 
 (function(__global) {
   var loader = System;
@@ -6529,7 +6529,7 @@ var _removeDefine = System.get("@@amd-helpers").createDefine();
 
 _removeDefine();
 })();
-System.register('util/bsp-utils.js', ['bower_components/jquery/dist/jquery.js'], function (_export) {
+System.register('src/js/temp/bsp-utils.js', ['bower_components/jquery/dist/jquery.js'], function (_export) {
     /** this will be pulled in from bower later */
 
     'use strict';
@@ -6834,7 +6834,7 @@ System.register('util/bsp-utils.js', ['bower_components/jquery/dist/jquery.js'],
         }
     };
 });
-System.register("templates/utility.js", [], function (_export) {
+System.register("src/js/templates/example.js", [], function (_export) {
   "use strict";
 
   return {
@@ -6844,13 +6844,13 @@ System.register("templates/utility.js", [], function (_export) {
     }
   };
 });
-System.register('lib/utility.js', ['templates/utility.js'], function (_export) {
+System.register('src/js/utilities/example.js', ['src/js/templates/example.js'], function (_export) {
 	'use strict';
 
 	var template;
 	return {
-		setters: [function (_templatesUtilityJs) {
-			template = _templatesUtilityJs['default'];
+		setters: [function (_srcJsTemplatesExampleJs) {
+			template = _srcJsTemplatesExampleJs['default'];
 		}],
 		execute: function () {
 			_export('default', {
@@ -6861,36 +6861,36 @@ System.register('lib/utility.js', ['templates/utility.js'], function (_export) {
 		}
 	};
 });
-System.register('lib/plugin.js', ['bower_components/jquery/dist/jquery.js', 'util/bsp-utils.js', 'lib/utility.js'], function (_export) {
+System.register('src/js/plugins/example.js', ['bower_components/jquery/dist/jquery.js', 'src/js/temp/bsp-utils.js', 'src/js/utilities/example.js'], function (_export) {
     'use strict';
 
-    var $, bsp_utils, utility;
+    var $, bsp_utils, example;
     return {
         setters: [function (_bower_componentsJqueryDistJqueryJs) {
             $ = _bower_componentsJqueryDistJqueryJs['default'];
-        }, function (_utilBspUtilsJs) {
-            bsp_utils = _utilBspUtilsJs.bsp_utils;
-        }, function (_libUtilityJs) {
-            utility = _libUtilityJs['default'];
+        }, function (_srcJsTempBspUtilsJs) {
+            bsp_utils = _srcJsTempBspUtilsJs.bsp_utils;
+        }, function (_srcJsUtilitiesExampleJs) {
+            example = _srcJsUtilitiesExampleJs['default'];
         }],
         execute: function () {
             _export('default', bsp_utils.plugin(false, 'bsp', 'example-plugin', {
                 '_each': function _each(item) {
                     var options = this.option(item);
-                    var moduleInstance = Object.create(utility);
+                    var moduleInstance = Object.create(example);
                     moduleInstance.init($(item), options);
                 }
             }));
         }
     };
 });
-System.register('lib/main.js', ['lib/plugin.js'], function (_export) {
+System.register('src/js/main.js', ['src/js/plugins/example.js'], function (_export) {
   'use strict';
 
   var plugin;
   return {
-    setters: [function (_libPluginJs) {
-      plugin = _libPluginJs['default'];
+    setters: [function (_srcJsPluginsExampleJs) {
+      plugin = _srcJsPluginsExampleJs['default'];
     }],
     execute: function () {}
   };

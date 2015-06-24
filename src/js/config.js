@@ -1,8 +1,8 @@
 System.config({
   defaultJSExtensions: true,
-  baseURL: '/',
+  baseURL: '',
   map: {
-  	'jquery' : 'bower_components/jquery/dist/jquery.js'
+  	'jquery': '../../../bower_components/jquery/dist/jquery.js'
   },
   transpiler: 'babel'
 });

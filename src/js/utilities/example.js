@@ -1,4 +1,4 @@
-import template from '../templates/utility';
+import template from '../templates/example';
 
 export default {
 	init: function($el, options) {
