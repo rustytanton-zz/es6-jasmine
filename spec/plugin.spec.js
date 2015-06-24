@@ -1,5 +1,5 @@
 import $ from 'jquery';
-import { MainPlugin } from 'plugin';
+import { MainPlugin } from '../lib/plugin';
 
 describe('plugin', () => {
 
